@@ -6,18 +6,18 @@ const displayMeny = () => {
     con.end()
 };
 //add a new Employee
-const addEmployee = (name, sal, depId) => {
-    console.log('name:', name, 'salary', sal, 'department_id', depId);
+const addEmployee = (firstName, lastName, roleId, managerId) => {
     con.promise().query(
-        `INSERT INTO roles SET ?`,
+        `INSERT INTO employees SET ?`,
         {
-            title: name,
-            salary: sal,
-            department_id: depId
+            first_name: firstName,
+            last_name: lastName,
+            manager_id: managerId,
+            role_id: roleId
         },
         )
         .then(([rows, fields]) => {
-            console.log('new role added')
+            console.log('new employee added')
             console.table(rows);
         })
         .catch(error =>{
