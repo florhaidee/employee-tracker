@@ -28,6 +28,24 @@ const addEmployee = (firstName, lastName, roleId, managerId) => {
         .then( ()=> displayMeny());
 };
 
+//Update Employees Role
+const updateRole = (employeeId, roleId)=>{
+    con.promise().query(
+        `UPDATE employees SET ? WHERE employees.id = ?`,
+        [{role_id: roleId }, employeeId]
+        )
+        .then(([rows, fields]) => {
+            console.log('employee updated')
+            console.table(rows);
+        })
+        .catch(error =>{
+            if (error){
+                console.log(error)
+            }
+        })
+        .then( ()=> displayMeny());    
+};
+
 //Get All Employees
 const getAllEmployees = () => {
     con.promise().query(
@@ -51,4 +69,4 @@ const getAllEmployees = () => {
 };
 
 
-module.exports = { getAllEmployees, addEmployee };
+module.exports = { getAllEmployees, addEmployee, updateRole};
