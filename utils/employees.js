@@ -1,10 +1,7 @@
 const cTable = require('console.table');
 const con = require('../db/database');
+const displayMeny = require('../utils/displayMenu');
 
-//Display Menu
-const displayMeny = () => {
-    con.end()
-};
 //add a new Employee
 const addEmployee = (firstName, lastName, roleId, managerId) => {
     con.promise().query(
