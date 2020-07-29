@@ -19,8 +19,8 @@ const addDepartment = name => {
         })
 };
 
-//Get All Departments
-const getAllDepartments = () => {
+//display All Departments
+const displayAllDepartments = () => {
    return con.promise().query("SELECT * FROM departments")
         .then(([rows, fields]) => {
             console.log('\n\n Departments......');
@@ -33,5 +33,10 @@ const getAllDepartments = () => {
         })
 };
 
+//get departments to display on prompt
+const getAllDepartments = () => {
+   return con.promise().query("SELECT * FROM departments")
+}
 
-module.exports = { getAllDepartments, addDepartment };
+
+module.exports = { displayAllDepartments, addDepartment, getAllDepartments};

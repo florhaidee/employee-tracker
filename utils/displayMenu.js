@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const { getAllDepartments, addDepartment} = require('../utils/departments');
+const {displayAllDepartments, addDepartment, getAllDepartments} = require('../utils/departments');
+const {getAllRoles, addRole} = require('../utils/roles');
 const con = require('../db/database');
 
 //menu questions
@@ -34,7 +35,51 @@ const addDepartmentQuestions =  {
   },
 };
 
+//questions to add a new role
+const addRoleQuestions = (departments)=>{
+  let departmentsArr=[]; 
+  departments.forEach(department =>{
+    let aux = department.id +'.'+ department.name;
+    departmentsArr.push(aux);
+  })
+  let Questions = [
+  {
+    type: 'input',
+    name: 'title',
+    message: "Please enter Role's title: (Required)",
+    validate: nameInput => {
+      if (nameInput) {
+        return true;
+      } else {
+        console.log(`Please enter a role's title`);
+        return false;
+      }
+    },
+  },
+  {
+    type: 'number',
+    name: 'salary',
+    message: "Please enter Role's salary: (Required)",
+    validate: nameInput => {
+      if (nameInput) {
+        return true;
+      } else {
+        console.log(`Please enter a role's salary`);
+        return false;
+      }
+    }
+  },
+  {
+   type: 'list',
+    name: 'menuChoice',
+    message: '{What would you like to do?',
+    choices: departmentsArr,
+  },
+  ];
 
+  return Questions;
+
+} 
 
 //function to display menu
 const displayMenu =() => {
@@ -46,14 +91,27 @@ const displayMenu =() => {
       return;
     }else if (answers.menuChoice === 'View all departments') {
       console.log('\n');
-      getAllDepartments()
+      displayAllDepartments()
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    }else if (answers.menuChoice === 'View all roles') {
+      console.log('\n');
+      getAllRoles()
       .then(() => {
         console.log('\n')
         displayMenu();
       })
     }else if (answers.menuChoice === 'Add a department'){
-      console.log('\n enter to add a new department');
-      promptAddDepartment()
+      console.log('\n');
+      promptAddDepartment();
+    } else if (answers.menuChoice === 'Add a role'){
+      getAllDepartments()
+      .then(([rows, fields]) => {
+        promptAddRole(rows)
+      })
+      
     }
   })
 };
@@ -70,7 +128,23 @@ const promptAddDepartment = () =>{
     })
   })
   .catch(err => {
-    console.log('error', err);
+    console.log('error addind department:', err);
+  })
+}
+
+//function to add a new role
+const promptAddRole = (departments) =>{
+  let questions= addRoleQuestions(departments);
+  inquirer.prompt(questions)
+  .then((answer)=>{
+    addRole(answer)
+    .then(() => {
+      console.log('\n')
+      displayMenu();
+    })
+  })
+  .catch(err => {
+    console.log('error adding role:', err);
   })
 }
 
