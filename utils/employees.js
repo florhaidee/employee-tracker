@@ -152,4 +152,21 @@ const updateManager = (data)=>{
             }
         }) 
 };
-module.exports = { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager};
+
+const deleteEmployee = (data)=> {
+    let id = 0;
+    // to get the Id from the employee string
+    let getId = data.employee.split(".");
+    id = parseInt(getId[0]);
+    return con.promise().query(
+        `DELETE FROM employees WHERE employees.id = ?`, id)
+        .then(([rows, fields]) => {
+            console.log(`employee ${getId[1]} deleted`)
+        })
+        .catch(error =>{
+            if (error){
+                console.log(`error deleting employee: `, error)
+            }
+        })
+}
+module.exports = { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager, deleteEmployee};

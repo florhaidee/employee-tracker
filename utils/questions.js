@@ -16,6 +16,9 @@ const MenuQuestions =  {
         'Add an employee',
         `Update an employee's role`,
         `Update an employee's manager`,
+        `Delete department`,
+        `Delete role`,
+        `Delete employee`,
         'Exit',
     ],
 };
@@ -202,4 +205,64 @@ const updateMangerQuestions = (employees) => {
   ]
   return questions;
 }
-module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions}
+
+//delete employee's questions
+const deleteEmployeeQuestions = (employees) => {
+  //get info from employees and fix it to display it
+  let employeesArr=[]; 
+  //add option NULL to the manager's array
+  employeesArr.push('None')
+  employees.forEach(employee =>{
+    let aux = employee.id +'.'+ employee.first_name +' '+ employee.last_name;
+    employeesArr.push(aux);  
+  });
+  // create questions array
+  const question = {
+    type: 'list',
+    name: 'employee',
+    message: `Please select the employee to delete: `,
+    choices: employeesArr,
+  }
+  return question;
+}
+
+//question to delete a department
+const deleteDepQuestions = (Deps)=> {
+  //get info from employees and fix it to display it
+  let depsArr=[]; 
+  //add option NULL to the manager's array
+  depsArr.push('None')
+  Deps.forEach(dep =>{
+    let aux = dep.id +'.'+ dep.name;
+    depsArr.push(aux);  
+  });
+  // create questions array
+  const question = {
+    type: 'list',
+    name: 'department',
+    message: `Please select the department to delete: `,
+    choices: depsArr,
+  }
+  return question;
+}
+
+//question to delete a role
+const deleteRoleQuestions = (roles)=> {
+  //get info from employees and fix it to display it
+  let rolesArr=[]; 
+  //add option NULL to the manager's array
+  rolesArr.push('None')
+  roles.forEach(role =>{
+    let aux = role.id +'.'+ role.title;
+    rolesArr.push(aux);  
+  });
+  // create questions array
+  const question = {
+    type: 'list',
+    name: 'role',
+    message: `Please select the role to delete: `,
+    choices: rolesArr,
+  }
+  return question;
+}
+module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions}

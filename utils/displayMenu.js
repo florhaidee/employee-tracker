@@ -1,8 +1,8 @@
 const inquirer = require('inquirer');
-const {displayAllDepartments, addDepartment, getAllDepartments} = require('../utils/departments');
-const {displayAllRoles, addRole, getAllRoles} = require('../utils/roles');
-const { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager } = require('../utils/employees');
-const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions} = require('../utils/questions')
+const { displayAllDepartments, addDepartment, getAllDepartments, deleteDep} = require('../utils/departments');
+const { displayAllRoles, addRole, getAllRoles, deleteRole } = require('../utils/roles');
+const { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager, deleteEmployee} = require('../utils/employees');
+const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions} = require('../utils/questions')
 const con = require('../db/database');
 
 
@@ -71,6 +71,24 @@ const displayMenu =() => {
       getAllEmployees()
       .then(([employees, fields]) => {
         promptUpdateManager(employees)
+      })
+    } else if (answers.menuChoice === 'Delete department') {
+      console.log('\n');
+      getAllDepartments()
+      .then(([departments, fields]) => {
+        promptDeleteDep(departments)
+      })
+    } else if (answers.menuChoice === 'Delete role') {
+      console.log('\n');
+      getAllRoles()
+      .then(([roles, fields]) => {
+        promptDeleteRole(roles)
+      })
+    } else if (answers.menuChoice === 'Delete employee') {
+      console.log('\n');
+      getAllEmployees()
+      .then(([employees, fields]) => {
+        promptDeleteEmployee(employees)
       })
     }
   })
@@ -160,5 +178,65 @@ const promptUpdateManager = (employees) =>{
   .catch(err => {
     console.log('error updating manager:', err);
   })  
+}
+
+//delete department
+const promptDeleteDep = (Deps) =>{
+  let question= deleteDepQuestions(Deps);
+  inquirer.prompt(question)
+  .then((answer)=>{
+    if (answer.department === 'None'){
+      displayMenu();
+    }else if (answer.department !== 'None'){
+      deleteDep(answer)
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    }
+    })
+  .catch(err => {
+    console.log('error deleting department:', err);
+  })
+}
+
+//delete role
+const promptDeleteRole = (roles) =>{
+  let question= deleteRoleQuestions(roles);
+  inquirer.prompt(question)
+  .then((answer)=>{
+    if (answer.role === 'None'){
+      displayMenu();
+    } else if (answer.role !== 'None'){
+      deleteRole(answer)
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    }
+  })
+  .catch(err => {
+    console.log('error deleting role:', err);
+  })
+}
+
+//delete employee
+const promptDeleteEmployee = (employees) =>{
+  let question= deleteEmployeeQuestions(employees);
+  inquirer.prompt(question)
+  .then((answer)=>{
+    if (answer.employee === 'None'){
+      displayMenu();
+    } else if (answer.employee !== 'None'){
+      deleteEmployee(answer)
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    }
+  })
+  .catch(err => {
+    console.log('error deleting employee:', err);
+  })
 }
 module.exports = displayMenu;

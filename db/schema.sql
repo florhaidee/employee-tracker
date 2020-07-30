@@ -18,11 +18,12 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE employees (
-   id int NOT NULL AUTO_INCREMENT,
+  id int NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL, 
   manager_id INTEGER UNSIGNED DEFAULT NULL,
   role_id INTEGER,
   CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL,
+  CONSTRAINT fk_manager FOREIGN KEY (employees_id) REFERENCES employees(manager_id) ON DELETE SET NULL,
   PRIMARY KEY (id)
 );
