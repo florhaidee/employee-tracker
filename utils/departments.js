@@ -54,4 +54,23 @@ const deleteDep = (data)=> {
             }
         })
 }
-module.exports = { displayAllDepartments, addDepartment, getAllDepartments, deleteDep};
+
+//query to get total budget utilized by department 
+const viewBudget = () => {
+    return con.promise().query(
+        `SELECT name AS Department_name, SUM(salary) AS total  
+        FROM employees
+        LEFT JOIN roles ON role_id = roles.id
+        LEFT JOIN departments ON roles.department_id = departments.id
+        GROUP BY name;`)
+        .then(([rows, fields]) => {
+            console.log(`Total Budget utilized by deprtments`)
+            console.table(rows)
+        })
+        .catch(error =>{
+            if (error){
+                console.log(`error viewing budget: `, error)
+            }
+        })
+}
+module.exports = { displayAllDepartments, addDepartment, getAllDepartments, deleteDep, viewBudget};

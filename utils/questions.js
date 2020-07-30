@@ -19,6 +19,7 @@ const MenuQuestions =  {
         `Delete department`,
         `Delete role`,
         `Delete employee`,
+        `View total budget utilized by department`,
         'Exit',
     ],
 };
@@ -265,4 +266,22 @@ const deleteRoleQuestions = (roles)=> {
   }
   return question;
 }
-module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions}
+
+//question to View budget
+const viewBudgetQuestions = (departments)=> {
+  //get info from departments and fix it to display it
+  let departmentsArr=[]; 
+  departments.forEach(department =>{
+    let aux = department.id +'.'+ department.title;
+    departmentsArr.push(aux);  
+  });
+  // create questions array
+  const question = {
+    type: 'list',
+    name: 'department',
+    message: `Please select the department to view Total Budget utilized: `,
+    choices: departmentsArr,
+  }
+  return question;
+}
+module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions, viewBudgetQuestions}

@@ -1,8 +1,8 @@
 const inquirer = require('inquirer');
-const { displayAllDepartments, addDepartment, getAllDepartments, deleteDep} = require('../utils/departments');
+const { displayAllDepartments, addDepartment, getAllDepartments, deleteDep, viewBudget} = require('../utils/departments');
 const { displayAllRoles, addRole, getAllRoles, deleteRole } = require('../utils/roles');
 const { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager, deleteEmployee} = require('../utils/employees');
-const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions} = require('../utils/questions')
+const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions, deleteEmployeeQuestions, deleteDepQuestions, deleteRoleQuestions, viewBudgetQuestions} = require('../utils/questions')
 const con = require('../db/database');
 
 
@@ -89,6 +89,13 @@ const displayMenu =() => {
       getAllEmployees()
       .then(([employees, fields]) => {
         promptDeleteEmployee(employees)
+      })
+    } else if (answers.menuChoice === `View total budget utilized by department`) {
+      console.log('\n');
+      viewBudget()
+      .then(() => {
+        console.log('\n')
+        displayMenu();
       })
     }
   })
@@ -239,4 +246,5 @@ const promptDeleteEmployee = (employees) =>{
     console.log('error deleting employee:', err);
   })
 }
+
 module.exports = displayMenu;
