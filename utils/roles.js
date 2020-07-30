@@ -1,10 +1,6 @@
 const cTable = require('console.table');
 const con = require('../db/database');
 
-//Display Menu
-const displayMeny = () => {
-    con.end()
-};
 //add a new department
 const addRole = (role) => {
     let getid = role.menuChoice.split(".");
@@ -29,7 +25,7 @@ const addRole = (role) => {
 };
 
 //Get All Roles
-const getAllRoles = () => {
+const displayAllRoles = () => {
     return con.promise().query(
         `SELECT roles.id, title AS Job_Title, salary, name AS Department_Name 
         FROM roles
@@ -40,10 +36,15 @@ const getAllRoles = () => {
         })
         .catch(error =>{
             if (error){
-                console.log('error connecting with database to get all roles: ',error)
+                console.log('error connecting with database to display all roles: ',error)
             }
         })
 };
 
+//get roles to display on prompt
+const getAllRoles = () => {
+    return con.promise().query("SELECT id, title FROM roles")
+ }
 
-module.exports = { getAllRoles, addRole };
+
+module.exports = { displayAllRoles, addRole, getAllRoles };

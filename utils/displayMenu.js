@@ -1,85 +1,10 @@
 const inquirer = require('inquirer');
 const {displayAllDepartments, addDepartment, getAllDepartments} = require('../utils/departments');
-const {getAllRoles, addRole} = require('../utils/roles');
+const {displayAllRoles, addRole, getAllRoles} = require('../utils/roles');
+const { addEmployee, updateRole, displayAllEmployees, getAllEmployees } = require('../utils/employees');
+const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions} = require('../utils/questions')
 const con = require('../db/database');
 
-//menu questions
-const MenuQuestions =  {
-    type: 'list',
-    name: 'menuChoice',
-    message: 'What would you like to do?',
-    choices: [
-        'View all departments',
-        'View all roles',
-        'View all employees',
-        'Add a department',
-        'Add a role',
-        'Add an employee',
-        'Update an employee role',
-        'Exit',
-    ],
-};
-
-//questions to add a new adepartment
-const addDepartmentQuestions =  {
-  type: 'input',
-  name: 'name',
-  message: "Please enter Department's name: (Required)",
-  validate: nameInput => {
-    if (nameInput) {
-      return true;
-    } else {
-      console.log(`Please enter a Department's name`);
-      return false;
-    }
-  },
-};
-
-//questions to add a new role
-const addRoleQuestions = (departments)=>{
-  let departmentsArr=[]; 
-  departments.forEach(department =>{
-    let aux = department.id +'.'+ department.name;
-    departmentsArr.push(aux);
-  })
-  let Questions = [
-  {
-    type: 'input',
-    name: 'title',
-    message: "Please enter Role's title: (Required)",
-    validate: nameInput => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log(`Please enter a role's title`);
-        return false;
-      }
-    },
-  },
-  {
-    type: 'number',
-    name: 'salary',
-    message: "Please enter Role's salary: (Required)",
-    validate: nameInput => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log(`Please enter a role's salary`);
-        return false;
-      }
-    }
-  },
-  {
-   type: 'list',
-    name: 'menuChoice',
-    message: '{What would you like to do?',
-    choices: departmentsArr,
-  },
-  ];
-
-  return Questions;
-
-} 
 
 //function to display menu
 const displayMenu =() => {
@@ -96,22 +21,33 @@ const displayMenu =() => {
         console.log('\n')
         displayMenu();
       })
-    }else if (answers.menuChoice === 'View all roles') {
+    } else if (answers.menuChoice === 'View all roles') {
+        console.log('\n');
+        displayAllRoles()
+        .then(() => {
+          console.log('\n')
+          displayMenu();
+        })
+    } else if (answers.menuChoice === 'View all employees') {
       console.log('\n');
-      getAllRoles()
-      .then(() => {
-        console.log('\n')
-        displayMenu();
-      })
+      displayAllEmployees()
+        .then(() => {
+          console.log('\n');
+          displayMenu();
+        })
     }else if (answers.menuChoice === 'Add a department'){
-      console.log('\n');
-      promptAddDepartment();
+        console.log('\n');
+        promptAddDepartment();
     } else if (answers.menuChoice === 'Add a role'){
-      getAllDepartments()
-      .then(([rows, fields]) => {
-        promptAddRole(rows)
+        getAllDepartments()
+        .then(([rows, fields]) => {
+          promptAddRole(rows)
+        })
+    } else if (answers.menuChoice === 'Add an employee'){
+      getAllEmployees()
+      .then(([managers, fields]) => {
+        promptAddEmployee(managers)
       })
-      
     }
   })
 };
@@ -146,6 +82,25 @@ const promptAddRole = (departments) =>{
   .catch(err => {
     console.log('error adding role:', err);
   })
+}
+
+//function to add a new employee
+const promptAddEmployee = (managers) =>{
+  getAllRoles()
+  .then(([roles, fields]) => {
+    let questions= addEmployeeQuestions(roles,managers);
+    inquirer.prompt(questions)
+    .then((answer)=>{
+      addEmployee(answer)
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    })
+    .catch(err => {
+      console.log('error adding employee:', err);
+    })
+})
 }
 
 module.exports = displayMenu;
