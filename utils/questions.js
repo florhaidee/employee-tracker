@@ -9,6 +9,8 @@ const MenuQuestions =  {
         'View all departments',
         'View all roles',
         'View all employees',
+        'View all employees by manager',
+        'View all employees by department',
         'Add a department',
         'Add a role',
         'Add an employee',
@@ -87,12 +89,13 @@ const addEmployeeQuestions = (roles,managers)=>{
     })
     //get info from managers and fix it to display it
     let managersArr=[]; 
+    //add option NULL to the manager's array
+    managersArr.push('None')
     managers.forEach(manager =>{
       let aux = manager.id +'.'+ manager.first_name +' '+ manager.last_name;
       managersArr.push(aux);
     })
-    //add option NULL to the manager's array
-    managersArr.push('NULL. No manager to add')
+
 
     let Questions = [
     {
@@ -175,13 +178,13 @@ const UpdEmpRoleQuestions = (roles,employees) => {
 const updateMangerQuestions = (employees) => {
   //get info from employees and fix it to display it
   let employeesArr=[]; let managersArr=[]; 
+  //add option NULL to the manager's array
+  managersArr.push('None')
   employees.forEach(employee =>{
     let aux = employee.id +'.'+ employee.first_name +' '+ employee.last_name;
     employeesArr.push(aux);
     managersArr.push(aux);
   })
-  //add option NULL to the manager's array
-  managersArr.push('NULL. No manager to add')
     // create question's array
   let questions = [
     {

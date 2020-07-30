@@ -30,12 +30,26 @@ const displayMenu =() => {
         })
     } else if (answers.menuChoice === 'View all employees') {
       console.log('\n');
-      displayAllEmployees()
+      displayAllEmployees(1)
         .then(() => {
           console.log('\n');
           displayMenu();
         })
-    }else if (answers.menuChoice === 'Add a department'){
+    } else if (answers.menuChoice === 'View all employees by manager') {
+      console.log('\n');
+      displayAllEmployees(2)
+        .then(() => {
+          console.log('\n');
+          displayMenu();
+        })
+    } else if (answers.menuChoice === 'View all employees by department') {
+      console.log('\n');
+      displayAllEmployees(3)
+        .then(() => {
+          console.log('\n');
+          displayMenu();
+        })
+    } else if (answers.menuChoice === 'Add a department'){
         console.log('\n');
         promptAddDepartment();
     } else if (answers.menuChoice === 'Add a role'){

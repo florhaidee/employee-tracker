@@ -3,15 +3,17 @@ const con = require('../db/database');
 
 //add a new Employee
 const addEmployee = (employee) => {
+
     // to get the Id from the role string
     let getId = employee.role.split(".");
     let roleId = parseInt(getId);
-    // to get the Id from the manager string
-    let getMId = employee.manager.split(".");
-    let managerId ='';
+
     //define query depending on if manager's Id is NULL or not
     let data = {}
-    if(getMId[0] !== 'NULL'){
+    if(employee.manager !== 'None'){
+        // to get the Id from the manager string
+        let getMId = employee.manager.split(".");
+        let managerId ='';
         managerId = parseInt(getMId);
         data = {
             first_name: employee.firstName,
@@ -19,7 +21,7 @@ const addEmployee = (employee) => {
             manager_id: managerId,
             role_id: roleId
         }
-    } else if(getMId[0] === 'NULL'){
+    } else if(employee.manager === 'None'){
         data = {
             first_name: employee.firstName,
             last_name: employee.lastName,
@@ -69,15 +71,38 @@ const updateRole = (data)=>{
 };
 
 //Display All Employees
-const displayAllEmployees = () => {
-    return con.promise().query(
-        `SELECT e.id, e.first_name, e.last_name, title AS Job_Title, salary, name AS Department_Name, 
-            IFNULL(CONCAT(m.first_name, ', ', m.last_name),'NULL') AS 'Manager'
+const displayAllEmployees = (view) => {
+    let param = '';
+    //selected to view all employees
+    if (view === 1){
+        param = `SELECT e.id, e.first_name, e.last_name, title AS Job_Title, salary, name AS Department_Name, 
+        IFNULL(CONCAT(m.first_name, ', ', m.last_name),'NULL') AS 'Manager'
         FROM employees e
         LEFT JOIN employees m ON e.manager_id = m.id
         LEFT JOIN roles ON e.role_id = roles.id
         LEFT JOIN departments ON roles.department_id = departments.id
-        ORDER BY e.id  ASC;`)
+        ORDER BY e.id  ASC;`
+     //selected view all by manager
+    } else if (view === 2){
+        param = `SELECT e.id, e.first_name, e.last_name, title AS Job_Title, salary, name AS Department_Name, 
+        IFNULL(CONCAT(m.first_name, ', ', m.last_name),'NULL') AS 'Manager'
+        FROM employees e
+        LEFT JOIN employees m ON e.manager_id = m.id
+        LEFT JOIN roles ON e.role_id = roles.id
+        LEFT JOIN departments ON roles.department_id = departments.id
+        ORDER BY Manager;`
+    //selected view by department
+    } else if (view === 3){
+        param = `SELECT e.id, e.first_name, e.last_name, title AS Job_Title, salary, name AS Department_Name, 
+        IFNULL(CONCAT(m.first_name, ', ', m.last_name),'NULL') AS 'Manager'
+        FROM employees e
+        LEFT JOIN employees m ON e.manager_id = m.id
+        LEFT JOIN roles ON e.role_id = roles.id
+        LEFT JOIN departments ON roles.department_id = departments.id
+        ORDER BY name;`
+    }
+
+    return con.promise().query(param)
         .then(([rows, fields]) => {
             console.log('Employees......')
             console.table(rows);
@@ -98,22 +123,19 @@ const getAllEmployees = () => {
 
 //Update Employee's manager
 const updateManager = (data)=>{
-    console.log(data)
+
     // to get the Id from the employee string
     let getId = data.employee.split(".");
     let employeeId = parseInt(getId[0]);
 
-    // to get the Id from the manager string
-    let splitId = data.manager.split(".");
-    let managerId = parseInt(splitId[0]);
-
     //define param depending on if manager's Id is NULL or not
     let param = [];
-    if(splitId[0] !== 'NULL'){
-        managerId = parseInt(splitId[0]);
-        //param = [{manager_id: managerId }, employeeId]
+    if(data.manager !== 'None'){    
+        // to get the Id from the manager string
+        let splitId = data.manager.split(".");
+        let managerId = parseInt(splitId[0]);
         param = [managerId, employeeId]
-    } else if(splitId[0] === 'NULL'){
+    } else if(data.manager === 'None'){
         param = [null, employeeId]
     }
     return con.promise().query(
@@ -122,7 +144,7 @@ const updateManager = (data)=>{
         )
         .then(([rows, fields]) => {
             console.log('employee updated')
-            console.log(getId[1], 'New manager:',splitId[1])
+            console.log(getId[1])
         })
         .catch(error =>{
             if (error){
