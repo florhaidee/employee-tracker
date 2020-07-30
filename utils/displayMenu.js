@@ -105,7 +105,6 @@ const displayMenu =() => {
 const promptAddDepartment = () =>{
   inquirer.prompt(addDepartmentQuestions)
   .then((answer)=>{
-    console.log(answer.name);
     addDepartment(answer.name)
     .then(() => {
       console.log('\n')

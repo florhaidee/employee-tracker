@@ -59,7 +59,7 @@
 
   To know how to use this application, click on the video below.
 
-[![Watch the video](https://i.imgur.com/yb6SO37.png)]( )
+[![Watch the video](https://i.imgur.com/vPslnon.png)](https://drive.google.com/file/d/1phwEhTLNqaC0R0erAVkvcPVYAKt0vBLH/view )
 
 
 
@@ -72,7 +72,8 @@
   ## Contributing 
 
     Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
-    Visit [Code of Conduct](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) to have more information.
+    Visit:
+https://www.contributor-covenant.org/version/2/0/code_of_conduct/ to have more information.
 
     To contribute 
      * Add an issue
