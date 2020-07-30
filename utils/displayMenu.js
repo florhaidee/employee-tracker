@@ -1,8 +1,8 @@
 const inquirer = require('inquirer');
 const {displayAllDepartments, addDepartment, getAllDepartments} = require('../utils/departments');
 const {displayAllRoles, addRole, getAllRoles} = require('../utils/roles');
-const { addEmployee, updateRole, displayAllEmployees, getAllEmployees } = require('../utils/employees');
-const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions} = require('../utils/questions')
+const { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager } = require('../utils/employees');
+const {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions} = require('../utils/questions')
 const con = require('../db/database');
 
 
@@ -47,6 +47,16 @@ const displayMenu =() => {
       getAllEmployees()
       .then(([managers, fields]) => {
         promptAddEmployee(managers)
+      })
+    } else if (answers.menuChoice === `Update an employee's role`){
+      getAllEmployees()
+      .then(([employees, fields]) => {
+        promptUpdateEmployeeRole(employees)
+      })
+    } else if (answers.menuChoice === `Update an employee's manager`){
+      getAllEmployees()
+      .then(([employees, fields]) => {
+        promptUpdateManager(employees)
       })
     }
   })
@@ -100,7 +110,41 @@ const promptAddEmployee = (managers) =>{
     .catch(err => {
       console.log('error adding employee:', err);
     })
-})
+  })
 }
 
+//function to update employee's role
+const promptUpdateEmployeeRole = (employees) =>{
+  getAllRoles()
+  .then(([roles, fields]) => {
+    let questions= UpdEmpRoleQuestions(roles,employees);
+    inquirer.prompt(questions)
+    .then((answer)=>{
+      updateRole(answer)
+      .then(() => {
+        console.log('\n')
+        displayMenu();
+      })
+    })
+    .catch(err => {
+      console.log('error adding employee:', err);
+    })
+  })
+}
+
+//function to update employee's manager
+const promptUpdateManager = (employees) =>{
+  let questions= updateMangerQuestions(employees);
+  inquirer.prompt(questions)
+  .then((answer)=>{
+    updateManager(answer)
+    .then(() => {
+      console.log('\n')
+      displayMenu();
+    })
+  })
+  .catch(err => {
+    console.log('error updating manager:', err);
+  })  
+}
 module.exports = displayMenu;

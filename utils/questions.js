@@ -12,7 +12,8 @@ const MenuQuestions =  {
         'Add a department',
         'Add a role',
         'Add an employee',
-        'Update an employee role',
+        `Update an employee's role`,
+        `Update an employee's manager`,
         'Exit',
     ],
 };
@@ -76,21 +77,23 @@ const addRoleQuestions = (departments)=>{
   return Questions;
 } 
 
-//questions to add a new role
+//questions to add a new employee
 const addEmployeeQuestions = (roles,managers)=>{
+    //get info from roles and fix it to display it
     let rolesArr=[]; 
     roles.forEach(role =>{
       let aux = role.id +'.'+ role.title;
       rolesArr.push(aux);
     })
+    //get info from managers and fix it to display it
     let managersArr=[]; 
     managers.forEach(manager =>{
       let aux = manager.id +'.'+ manager.first_name +' '+ manager.last_name;
       managersArr.push(aux);
     })
+    //add option NULL to the manager's array
     managersArr.push('NULL. No manager to add')
-    console.log(`rolesArr:`,rolesArr);
-    console.log(managersArr)
+
     let Questions = [
     {
       type: 'input',
@@ -134,4 +137,66 @@ const addEmployeeQuestions = (roles,managers)=>{
     return Questions;
 } 
 
-module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions}
+//questions to display when updating an employee's role
+const UpdEmpRoleQuestions = (roles,employees) => {
+  //get info from employees and fix it to display it
+  let employeesArr=[]; 
+  employees.forEach(employee =>{
+    let aux = employee.id +'.'+ employee.first_name +' '+ employee.last_name;
+    employeesArr.push(aux);
+  })
+
+  //get info from roles and fix it to display it
+  let rolesArr=[]; 
+  roles.forEach(role =>{
+    let aux = role.id +'.'+ role.title;
+    rolesArr.push(aux);
+  })
+
+  // create question's array
+  let questions = [
+    {
+      type: 'list',
+       name: 'employee',
+       message: `Please select the employee to modify: `,
+       choices: employeesArr,
+    },
+    {
+      type: 'list',
+       name: 'role',
+       message: `Please select the new role: `,
+       choices: rolesArr,
+  },  
+  ]
+  return questions;
+}
+
+//create question's array to update an employee's manager
+const updateMangerQuestions = (employees) => {
+  //get info from employees and fix it to display it
+  let employeesArr=[]; let managersArr=[]; 
+  employees.forEach(employee =>{
+    let aux = employee.id +'.'+ employee.first_name +' '+ employee.last_name;
+    employeesArr.push(aux);
+    managersArr.push(aux);
+  })
+  //add option NULL to the manager's array
+  managersArr.push('NULL. No manager to add')
+    // create question's array
+  let questions = [
+    {
+      type: 'list',
+        name: 'employee',
+        message: `Please select the employee to modify: `,
+        choices: employeesArr,
+    },
+    {
+      type: 'list',
+        name: 'manager',
+        message: `Please select the new manager: `,
+        choices: managersArr,
+  },  
+  ]
+  return questions;
+}
+module.exports = {MenuQuestions, addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, UpdEmpRoleQuestions, updateMangerQuestions}

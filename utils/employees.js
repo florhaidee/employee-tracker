@@ -3,14 +3,15 @@ const con = require('../db/database');
 
 //add a new Employee
 const addEmployee = (employee) => {
-    console.log(employee)
+    // to get the Id from the role string
     let getId = employee.role.split(".");
     let roleId = parseInt(getId);
+    // to get the Id from the manager string
     let getMId = employee.manager.split(".");
     let managerId ='';
+    //define query depending on if manager's Id is NULL or not
     let data = {}
     if(getMId[0] !== 'NULL'){
-        console.log(getMId,`not NULL`)
         managerId = parseInt(getMId);
         data = {
             first_name: employee.firstName,
@@ -19,7 +20,6 @@ const addEmployee = (employee) => {
             role_id: roleId
         }
     } else if(getMId[0] === 'NULL'){
-        console.log(getMId,`IS NULL`)
         data = {
             first_name: employee.firstName,
             last_name: employee.lastName,
@@ -33,7 +33,7 @@ const addEmployee = (employee) => {
         )
         .then(([rows, fields]) => {
             console.log('new employee added')
-            console.log(data);
+            console.log(employee.firstName, ' ', employee.lastName);
         })
         .catch(error =>{
             if (error){
@@ -43,21 +43,29 @@ const addEmployee = (employee) => {
 };
 
 //Update Employees Role
-const updateRole = (employeeId, roleId)=>{
-    con.promise().query(
+const updateRole = (data)=>{
+    console.log(data)
+    // to get the Id from the employee string
+    let getId = data.employee.split(".");
+    let employeeId = parseInt(getId[0]);
+
+    // to get the Id from the role string
+    let splitId = data.role.split(".");
+    let roleId = parseInt(splitId[0]);
+
+    return con.promise().query(
         `UPDATE employees SET ? WHERE employees.id = ?`,
         [{role_id: roleId }, employeeId]
         )
         .then(([rows, fields]) => {
             console.log('employee updated')
-            console.table(rows);
+            console.log(getId[1], 'New Role:',splitId[1])
         })
         .catch(error =>{
             if (error){
-                console.log(`error adding updating employee's role: `, error)
+                console.log(`error updating employee's role: `, error)
             }
-        })
-        .then( ()=> displayMeny());    
+        }) 
 };
 
 //Display All Employees
@@ -88,4 +96,38 @@ const getAllEmployees = () => {
          FROM employees`)
 };
 
-module.exports = { addEmployee, updateRole, displayAllEmployees, getAllEmployees };
+//Update Employee's manager
+const updateManager = (data)=>{
+    console.log(data)
+    // to get the Id from the employee string
+    let getId = data.employee.split(".");
+    let employeeId = parseInt(getId[0]);
+
+    // to get the Id from the manager string
+    let splitId = data.manager.split(".");
+    let managerId = parseInt(splitId[0]);
+
+    //define param depending on if manager's Id is NULL or not
+    let param = [];
+    if(splitId[0] !== 'NULL'){
+        managerId = parseInt(splitId[0]);
+        //param = [{manager_id: managerId }, employeeId]
+        param = [managerId, employeeId]
+    } else if(splitId[0] === 'NULL'){
+        param = [null, employeeId]
+    }
+    return con.promise().query(
+        `UPDATE employees SET manager_id = ? WHERE employees.id = ?`,
+        param
+        )
+        .then(([rows, fields]) => {
+            console.log('employee updated')
+            console.log(getId[1], 'New manager:',splitId[1])
+        })
+        .catch(error =>{
+            if (error){
+                console.log(`error updating employee's manager: `, error)
+            }
+        }) 
+};
+module.exports = { addEmployee, updateRole, displayAllEmployees, getAllEmployees, updateManager};
