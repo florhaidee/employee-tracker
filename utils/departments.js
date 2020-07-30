@@ -46,7 +46,7 @@ const deleteDep = (data)=> {
     return con.promise().query(
         `DELETE FROM departments WHERE departments.id = ?`, id)
         .then(([rows, fields]) => {
-            console.log(`department ${getId[1]}deleted`)
+            console.log(`department ${getId[1]} deleted`)
         })
         .catch(error =>{
             if (error){

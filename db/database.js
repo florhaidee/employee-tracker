@@ -1,4 +1,3 @@
-const cTable = require('console.table');
 require('dotenv').config();
 
 // get the client
@@ -11,12 +10,5 @@ const connection = mysql.createConnection({
     password: process.env.DB_PW,
     database: process.env.DB_NAME
 });
-// con.promise().query("SELECT * FROM employees")
-//   .then( ([rows,fields]) => {
-//     console.table(rows);
-//   })
-//   .catch(
-//       console.log('an error ocurred'))
-//   .then( () => con.end());
 
 module.exports = connection;
